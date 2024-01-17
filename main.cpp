@@ -8,33 +8,33 @@
 
 using namespace std;
 
-enum Suit {
+enum CardSuit {
     HEARTS,
     DIAMONDS,
     CLUBS,
     SPADES
 };
 
-enum Rank {
+enum CardRank {
     TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE
 };
 
 class Card {
     private:
-        Suit suit;
-        Rank rank;
+        CardSuit suit;
+        CardRank rank;
     
     public:
-        Card(Suit s, Rank r) {
+        Card(CardSuit s, CardRank r) {
             suit = s;
             rank = r;
         }
 
-        Suit getSuit() const {
+        CardSuit getSuit() const {
             return suit;
         }
 
-        Rank getRank() const {
+        CardRank getRank() const {
             return rank;
         }
 
@@ -47,40 +47,40 @@ class Card {
 };
 
 class Deck {
-public:
-    Deck() {
-        initializeDeck();
-        shuffleDeck();
-    }
+    public:
+        Deck() {
+            initializeDeck();
+            shuffleDeck();
+        }
 
-    const Card& dealCard() {
-        const Card& topCard = cards.front();
-        cards.pop_front();
-        return topCard;
-    }
+        const Card& dealCard() {
+            const Card& topCard = cards.front();
+            cards.pop_front();
+            return topCard;
+        }
 
-    bool isEmpty() const {
-        return cards.empty();
-    }
+        bool isEmpty() const {
+            return cards.empty();
+        }
 
-private:
-    list<Card> cards;
+    private:
+        list<Card> cards;
 
-    void initializeDeck() {
-    // initialize card deck with all 52 cards
-        for (int s = HEARTS; s <= SPADES; ++s) {
-            for (int r = TWO; r <= ACE; ++r) {
-                Card newCard(static_cast<Suit>(s), static_cast<Rank>(r));
-                cards.push_back(newCard);
+        void initializeDeck() {
+        // initialize card deck with all 52 cards
+            for (int s = HEARTS; s <= SPADES; ++s) {
+                for (int r = TWO; r <= ACE; ++r) {
+                    Card newCard(static_cast<CardSuit>(s), static_cast<CardRank>(r));
+                    cards.push_back(newCard);
+                }
             }
         }
-    }
 
-    void shuffleDeck() {
-    // randomly shuffle deck
-        srand(static_cast<unsigned int>(time(nullptr)));
-        cards.sort([](const Card& a, const Card& b) { return rand() % 2 == 0; });
-    }
+        void shuffleDeck() {
+        // randomly shuffle deck
+            srand(static_cast<unsigned int>(time(nullptr)));
+            cards.sort([](const Card& a, const Card& b) { return rand() % 2 == 0; });
+        }
 
 };
 
@@ -126,7 +126,7 @@ class CrazyEightsGame {
             cout << "Round " << roundNumber << " : "<< endl << "Current card on the discard pile: ";
             discardPile.back().display();
             cout << "---------------------------------------" << endl;
-            roundNumber ++;
+            roundNumber++;
         }
 
         void drawCard() {
@@ -200,7 +200,7 @@ class CrazyEightsGame {
                 cout << "Input '0' for Hearts, '1' for Diamonds, '2' for Clubs, or '3' for Spades";
                 cin >> suitChoice;
                 if (suitChoice!=0 || suitChoice!=1 || suitChoice!=2|| suitChoice!=3) {
-                    Suit newSuit = static_cast<Suit>(suitChoice);
+                    CardSuit newSuit = static_cast<CardSuit>(suitChoice);
                     discardPile.back() = Card(newSuit, EIGHT);
                 } else {
                     cout << "Invalid input. Please enter either '0', '1', '2', or '3'";
@@ -245,11 +245,12 @@ class CrazyEightsGame {
 int main() {
     int numPlayers;
     cout << "WELCOME TO THE CRAZY 8s CONSOLE GAME!" << endl;
-    cout << "Please enter the number of players (2-4): ";
+    system("CLS"); 
+    cout << "Please enter the number of players (2-6): ";
     cin >> numPlayers;
 
-    if (numPlayers < 2 || numPlayers > 4) {
-        cout << "Invalid number of players. Please enter a number between 2 and 4.\n";
+    if (numPlayers < 2 || numPlayers > 8) {
+        cout << "Invalid number of players. Please enter a number between 2 and 8.\n";
         return 1;
     }
 
