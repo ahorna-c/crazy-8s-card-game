@@ -249,8 +249,8 @@ int main() {
     cout << "Please enter the number of players (2-6): ";
     cin >> numPlayers;
 
-    if (numPlayers < 2 || numPlayers > 8) {
-        cout << "Invalid number of players. Please enter a number between 2 and 8.\n";
+    if (numPlayers < 2 || numPlayers > 6) {
+        cout << "Invalid number of players. Please enter a number between 2 and 6.\n";
         return 1;
     }
 
