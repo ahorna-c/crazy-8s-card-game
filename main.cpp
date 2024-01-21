@@ -136,7 +136,7 @@ class CrazyEightsGame {
         void dealInitialHands() {
         // add 8 cards to each player's hand
             for (int i = 0; i < numPlayers; ++i) {
-                for (int j = 0; j < 7; ++j) {
+                for (int j = 0; j < 8; ++j) {
                     playerCards[i].push_back(deck.dealCard());
                 }
             }
@@ -145,7 +145,7 @@ class CrazyEightsGame {
         // define method to display the current status of the game
         void displayGameState() {
             cout << "Round " << roundNumber << " : "<< endl << "Current card on the discard pile: ";
-            discardPile.back().display(); // display latest card of the discard pile
+            discardPile.back().display(); // display top card of the discard pile
             cout << "---------------------------------------" << endl;
             roundNumber++;
         }
@@ -153,7 +153,7 @@ class CrazyEightsGame {
         // define method to enable current player to draw a card
         void drawCard() {
             if (!deck.isEmpty()) {
-                // deal card to player
+                // deal card to player if deck is not empty
                 playerCards[currentPlayer].push_back(deck.dealCard());
             } else {
                 // when the deck is empty, reshuffle by temporarily storing cards in a temp list
@@ -163,7 +163,7 @@ class CrazyEightsGame {
                     discardPile.pop_back();
                 }
 
-                // re-initialize the playing deck and discard deck
+                // re-initialize the playing deck and the discard deck
                 deck = Deck();
                 discardPile = temp;
             }
@@ -187,7 +187,7 @@ class CrazyEightsGame {
                     validPlay = true;
                 } // check if current player's hand is not empty
                 else if (!playerCards[currentPlayer].empty()) {
-                    // craete iterator that will poiny to the card chosen by the player
+                    // craete iterator that will point to the card chosen by the player
                     auto it = playerCards[currentPlayer].begin();
                     advance(it, choice - 1); // move iterator to the position of the chosen card
                     if (isValidPlay(*it)) { // check if chosen vard is valid
@@ -215,10 +215,15 @@ class CrazyEightsGame {
 
         // method to play card
         void playCard(int index) {
+            // intialize iterator that points to first card in player's hand
             auto it = playerCards[currentPlayer].begin();
+            // move iterator to chosen card index
             advance(it, index);
+            // store chosen card as playedCard
             Card playedCard = *it;
+            // remove chosen card from player hand using iterator
             playerCards[currentPlayer].erase(it);
+            // add chosen card to discard pile
             discardPile.push_back(playedCard);
 
             if (playedCard.getRank() == EIGHT) {
@@ -232,11 +237,16 @@ class CrazyEightsGame {
             int suitChoice;
 
             while (!validInput) {
+                // prompt user to select a suit
                 cout << "Input '0' for Hearts, '1' for Diamonds, '2' for Clubs, or '3' for Spades";
                 cin >> suitChoice;
+                // check if inputted value corresponds to a valid suit
                 if (suitChoice==0 || suitChoice==1 || suitChoice==2 || suitChoice==3) {
+                    // convert suit choice to a CardSuit enumeration
                     CardSuit newSuit = static_cast<CardSuit>(suitChoice);
+                    // update the top card of the discard pile
                     discardPile.back() = Card(newSuit, EIGHT);
+                    validInput = true;
                 } else {
                     cout << "Invalid input. Please enter either '0', '1', '2', or '3'";
                 }
@@ -245,31 +255,43 @@ class CrazyEightsGame {
 
         // method to display all cards in the player's hand
         void displayPlayerHand() const {
+            // display currentPlayer's hand
             cout << "Player " << currentPlayer + 1 << "'s hand: " << endl;
             int cardNumber = 1;
+            // display card number and card value
             for (const auto& card : playerCards[currentPlayer]) {
                 cout << cardNumber << " - ";
                 card.display();
-                cardNumber ++;
+                // increment card number for the next iteration
+                cardNumber++;
             }
             cout << "\n";
         }
 
+        // method to rotate to next player in a circular fashion
         void rotatePlayers() {
+            // use modulo operation to rotate in a circular manner
             currentPlayer = (currentPlayer + 1) % numPlayers;
         }
 
+        // method to check if game is over (check if any player's hand is empty)
         bool isGameOver() const {
+            // iterate through each player's hand
             for (const auto& hand : playerCards) {
+                // check if empty
                 if (hand.empty()) {
                     return true;
                 }
             }
+            // if no players have empty hands, game is not over
             return false;
         }
 
+        // method to display winner of the game based on the first empty hand
         void displayWinner() const {
+            // iterate through all player hands
             for (int i = 0; i < numPlayers; ++i) {
+                // if player hand is empty, display win message
                 if (playerCards[i].empty()) {
                     cout << "Player " << i + 1 << " wins!\n";
                     return;
@@ -278,19 +300,24 @@ class CrazyEightsGame {
         }
 };
 
+// main function
 int main() {
+    // initialize int var to store number of players
     int numPlayers;
     cout << "WELCOME TO THE CRAZY 8s CONSOLE GAME!" << endl;
     system("CLS"); 
-    cout << "Please enter the number of players (2-6): ";
+    cout << "Please enter the number of players (2-5): ";
     cin >> numPlayers;
 
-    if (numPlayers < 2 || numPlayers > 6) {
+    // check if inputted number of players falls within the valid range
+    if (numPlayers < 2 || numPlayers > 5) {
         cout << "Invalid number of players. Please enter a number between 2 and 6.\n";
         return 1;
     }
 
+    // create an instance of the CrazyEightsGame class with the specified number of players
     CrazyEightsGame game(numPlayers);
+    // start and play the Crazy 8s game
     game.play();
 
     return 0;
